@@ -1,0 +1,25 @@
+* {
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+    
+}
+body {
+    font: normal 16px Arial, verdana, serif;
+    text-align: left;
+    
+}
+h2{
+    text-align: center;
+}
+p{
+    text-align: center;
+    text-indent: 30px;
+}
+
+nav.navbar {
+    background-color: #ecfdec;
+}
+footer {
+    background-color: #ecfdec;
+}
