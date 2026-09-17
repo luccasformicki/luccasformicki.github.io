@@ -51,7 +51,8 @@ body {
 .mobile-project-carousel {
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
+  touch-action: auto;
+  overscroll-behavior-x: contain;
 }
 
 .mobile-project-carousel::-webkit-scrollbar {

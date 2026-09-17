@@ -1276,6 +1276,8 @@ function ProjectCard({ project, index, mobile = false }) {
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(project.likes ?? 0);
   const projectUrl = project.demo || project.codigo;
+  const pointerStartRef = useRef(null);
+  const wasDraggedRef = useRef(false);
 
   const toggleLike = () => {
     setLiked((prev) => !prev);
@@ -1293,10 +1295,39 @@ function ProjectCard({ project, index, mobile = false }) {
     }
   };
 
+  const handlePointerDown = (event) => {
+    if (!mobile) return;
+    pointerStartRef.current = { x: event.clientX, y: event.clientY };
+    wasDraggedRef.current = false;
+  };
+
+  const handlePointerMove = (event) => {
+    if (!mobile || !pointerStartRef.current) return;
+    const movedX = Math.abs(event.clientX - pointerStartRef.current.x);
+    const movedY = Math.abs(event.clientY - pointerStartRef.current.y);
+    if (movedX > 8 || movedY > 8) wasDraggedRef.current = true;
+  };
+
+  const handlePointerEnd = () => {
+    pointerStartRef.current = null;
+  };
+
+  const handleProjectClick = () => {
+    if (wasDraggedRef.current) {
+      wasDraggedRef.current = false;
+      return;
+    }
+    openProject();
+  };
+
   return (
     <Reveal index={index} className={mobile ? "min-w-0" : "min-w-[86vw] snap-start md:min-w-0"}>
       <GlassCard
-        onClick={openProject}
+        onClick={handleProjectClick}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={handlePointerEnd}
         onKeyDown={handleProjectKeyDown}
         role={mobile && projectUrl ? "link" : undefined}
         tabIndex={mobile && projectUrl ? 0 : undefined}
