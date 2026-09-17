@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  background-color: #0d0d0d;
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* scrollbar discreta, alinhada à identidade visual */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0d0d;
+}
+::-webkit-scrollbar-thumb {
+  background: #b026b0;
+  border-radius: 8px;
+}
+
+.projects-carousel {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(176, 38, 176, 0.55) transparent;
+}
+
+.projects-carousel::-webkit-scrollbar {
+  height: 6px;
+}
+
+.projects-carousel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.projects-carousel::-webkit-scrollbar-thumb {
+  background: rgba(176, 38, 176, 0.55);
+  border-radius: 999px;
+}
+
+.mobile-project-carousel {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+}
+
+.mobile-project-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* ============================================================================
+ * Painel de código animado do hero
+ * Paleta (tema Dracula) portada de hero-animation-preview.html e exposta como
+ * variáveis CSS. Os tokens já nascem coloridos no array CODE, então nada é
+ * recolorido durante a digitação.
+ * ==========================================================================*/
+.code-anim {
+  --code-bg: #0e0b16;
+  --code-bar: #15111f;
+  --code-border: #241d33;
+  --code-linenr: #3b3350;
+  --code-plain: #e4e1f0;
+  --code-comment: #5a6183;
+  --code-keyword: #ff5fbf;
+  --code-op: #ff5fbf;
+  --code-builtin: #58c7f3;
+  --code-func: #7be0ff;
+  --code-class: #7be0ff;
+  --code-string: #5ce87b;
+  --code-number: #bd8bff;
+  --code-vardecl: #e86aff;
+  --code-param: #ffb86c;
+  --code-error: #ff5555;
+  --code-hint: #5ce87b;
+}
+
+.tok-plain {
+  color: var(--code-plain);
+}
+.tok-comment {
+  color: var(--code-comment);
+  font-style: italic;
+}
+.tok-keyword {
+  color: var(--code-keyword);
+}
+.tok-op {
+  color: var(--code-op);
+}
+.tok-builtin {
+  color: var(--code-builtin);
+}
+.tok-func {
+  color: var(--code-func);
+}
+.tok-class {
+  color: var(--code-class);
+}
+.tok-string {
+  color: var(--code-string);
+}
+.tok-number {
+  color: var(--code-number);
+}
+.tok-vardecl {
+  color: var(--code-vardecl);
+}
+.tok-param {
+  color: var(--code-param);
+  font-style: italic;
+}
+.tok-error {
+  color: var(--code-error);
+}
+.tok-hint {
+  color: var(--code-hint);
+}
+.tok-muted {
+  color: var(--code-comment);
+}
+.tok-linenr {
+  color: var(--code-linenr);
+}
+
+/* cursor de bloco, no magenta da identidade do site */
+.code-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.2em;
+  background: #b026b0;
+  vertical-align: -0.24em;
+  animation: code-blink 1s steps(2, start) infinite;
+}
+
+@keyframes code-blink {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Área rolável. Sem `overscroll-behavior: contain`: ao chegar no fim o scroll
+   encadeia para a página, senão o painel prende a rolagem do site enquanto a
+   animação digita (ele fica grudado no fim o tempo todo). */
+.code-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(176, 38, 176, 0.45) transparent;
+}
+.code-scroll:focus-visible {
+  outline: 2px solid #b026b0;
+  outline-offset: -2px;
+}
+.code-scroll::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.code-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.code-scroll::-webkit-scrollbar-thumb {
+  background: rgba(176, 38, 176, 0.45);
+  border-radius: 4px;
+}
+.code-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(176, 38, 176, 0.7);
+}
+
+/* vapor da xícara */
+@keyframes code-steam {
+  0% {
+    opacity: 0;
+    transform: translateY(2px) scaleY(0.7);
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-7px) scaleY(1.2);
+  }
+}
+.code-steam {
+  transform-origin: bottom;
+  animation: code-steam 2.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-cursor,
+  .code-steam {
+    animation: none;
+  }
+}

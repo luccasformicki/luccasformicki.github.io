@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Currículo fora dos buscadores.
+# A PÁGINA /curriculo/ é bloqueada pela meta tag noindex dela, e por isso
+# precisa continuar rastreável — não a bloqueie aqui, ou o Google nunca lê
+# o noindex.
+# Já os ARQUIVOS não carregam meta tag, então o bloqueio deles tem que ser
+# neste arquivo. O padrão cobre qualquer versão datada que você subir depois.
+Disallow: /*.pdf$
+Disallow: /*.docx$
