@@ -76,6 +76,7 @@ export default function Curriculo() {
             <a
               href={RESUME_PDF}
               download
+              target="_self"
               className="inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-[#B026B0] px-6 py-3.5 text-sm font-medium text-white transition-colors duration-300 hover:bg-[#8f1f8f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B026B0] motion-reduce:transition-none sm:w-auto"
             >
               <Download className="h-4 w-4 shrink-0" />
