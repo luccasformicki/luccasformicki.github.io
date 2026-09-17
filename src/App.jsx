@@ -991,13 +991,20 @@ function Hero({ id }) {
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
 
-            {/* Abre em nova aba a página dedicada (/curriculo/), que tem o
-                visualizador e o botão de download. Não baixa direto daqui. */}
+            {/* No mobile, mantém a navegação na aba atual. */}
+            <a
+              href={RESUME_PAGE}
+              className="inline-flex md:hidden items-center gap-2 text-sm text-white border border-white/30 rounded-full px-5 py-2.5 hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
+            >
+              <Download className="w-4 h-4" />
+              {t.hero.resumeButton}
+            </a>
+            {/* Desktop mantém a página dedicada em uma nova aba. */}
             <a
               href={RESUME_PAGE}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-white border border-white/30 rounded-full px-5 py-2.5 hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
+              className="hidden md:inline-flex items-center gap-2 text-sm text-white border border-white/30 rounded-full px-5 py-2.5 hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
             >
               <Download className="w-4 h-4" />
               {t.hero.resumeButton}
