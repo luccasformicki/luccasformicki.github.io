@@ -59,6 +59,24 @@ function usePdfReady(url) {
 export default function Curriculo() {
   const status = usePdfReady(RESUME_PDF);
 
+  useEffect(() => {
+    const resetViewportLayout = () => {
+      document.documentElement.style.removeProperty("zoom");
+      document.body.style.removeProperty("zoom");
+    };
+
+    resetViewportLayout();
+    window.addEventListener("orientationchange", resetViewportLayout);
+    window.addEventListener("resize", resetViewportLayout);
+    window.visualViewport?.addEventListener("resize", resetViewportLayout);
+
+    return () => {
+      window.removeEventListener("orientationchange", resetViewportLayout);
+      window.removeEventListener("resize", resetViewportLayout);
+      window.visualViewport?.removeEventListener("resize", resetViewportLayout);
+    };
+  }, []);
+
   return (
     <div
       className="min-h-screen overflow-x-hidden bg-[#0D0D0D] bg-dot-grid"
@@ -124,7 +142,7 @@ export default function Curriculo() {
             data={RESUME_PDF}
             type="application/pdf"
             aria-label={TEXT.viewerLabel}
-            className="mt-8 block h-[80vh] min-h-[420px] w-full rounded-xl border border-white/10 bg-white/5 md:mt-10 md:rounded-2xl"
+            className="resume-viewer mt-8 block h-[80vh] min-h-[420px] w-full rounded-xl border border-white/10 bg-white/5 md:mt-10 md:rounded-2xl"
           >
             {/* Alguns navegadores de celular não embutem PDF: aqui fica a saída. */}
             <p className="p-6 text-sm font-light leading-relaxed text-[#C4C4C4]">

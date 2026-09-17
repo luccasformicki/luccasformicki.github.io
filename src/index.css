@@ -52,6 +52,18 @@ body {
   touch-action: pan-y;
 }
 
+.resume-viewer {
+  contain: size layout paint;
+}
+
+@media (max-width: 767px) and (orientation: landscape) {
+  .resume-viewer {
+    height: calc(100svh - 150px) !important;
+    min-height: 220px !important;
+    margin-top: 1rem;
+  }
+}
+
 /* Telefones em paisagem podem ter mais de 768px de largura, mas continuam
    usando a experiência mobile para preservar um projeto por vez. */
 @media (min-width: 768px) and (orientation: landscape) and (max-height: 600px) {
