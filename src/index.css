@@ -49,14 +49,23 @@ body {
 }
 
 .mobile-project-carousel {
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  touch-action: auto;
-  overscroll-behavior-x: contain;
+  touch-action: pan-y;
 }
 
-.mobile-project-carousel::-webkit-scrollbar {
-  display: none;
+/* Telefones em paisagem podem ter mais de 768px de largura, mas continuam
+   usando a experiência mobile para preservar um projeto por vez. */
+@media (min-width: 768px) and (orientation: landscape) and (max-height: 600px) {
+  .desktop-technologies,
+  .desktop-featured-project,
+  .desktop-project-filter,
+  .desktop-project-grid {
+    display: none !important;
+  }
+
+  .mobile-technologies,
+  .mobile-projects {
+    display: block !important;
+  }
 }
 
 

@@ -14,6 +14,8 @@ import {
   ArrowDown,
   ArrowUp,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Heart,
   Eye,
   ExternalLink,
@@ -146,9 +148,6 @@ const PRIMARY_TECHNOLOGIES = [
   "Python",
   "JavaScript",
   "Node.js",
-  "Docker",
-  "Git",
-  "Figma",
 ];
 
 // ---- Seção "Projetos" -------------------------------------------------------
@@ -1146,13 +1145,13 @@ function Skills({ id }) {
           <h2 className="mt-4 text-white font-bold text-3xl sm:text-4xl">{t.skills.title}</h2>
         </Reveal>
 
-        <div className="mt-12 hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 auto-rows-fr">
+        <div className="desktop-technologies mt-12 hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 auto-rows-fr">
           {TECNOLOGIAS.map((tech, i) => (
             <TechCard key={tech.nome} tech={tech} index={2 + i} />
           ))}
         </div>
 
-        <div className="mt-8 md:hidden">
+        <div className="mobile-technologies mt-8 md:hidden">
           <div className="grid grid-cols-2 gap-4 auto-rows-fr">
             {mobileTechnologies.map((tech, i) => (
               <TechCard key={tech.nome} tech={tech} index={2 + i} />
@@ -1243,7 +1242,7 @@ function ProjectStatusBadge({ status }) {
 function ProjectFilter({ techs, active, onChange }) {
   const { t } = useLang();
   return (
-    <Reveal index={3} className="hidden md:flex flex-wrap gap-3">
+    <Reveal index={3} className="desktop-project-filter hidden md:flex flex-wrap gap-3">
       <button
         onClick={() => onChange(t.projects.filterAll)}
         className={`text-xs font-medium rounded-full px-4 py-2 transition-colors duration-300 ${
@@ -1414,55 +1413,93 @@ function ProjectCard({ project, index, mobile = false }) {
 }
 
 function MobileProjectCarousel({ projects }) {
-  const carouselRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const pointerStartRef = useRef(null);
 
   useEffect(() => {
-    const carousel = carouselRef.current;
-    if (!carousel) return undefined;
-
-    const slides = Array.from(carousel.children);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setActiveIndex(slides.indexOf(visible.target));
-      },
-      { root: carousel, threshold: [0.65, 0.9] }
-    );
-
-    slides.forEach((slide) => observer.observe(slide));
-    return () => observer.disconnect();
+    setActiveIndex(0);
   }, [projects]);
 
+  const goToProject = (nextIndex) => {
+    setActiveIndex(Math.max(0, Math.min(nextIndex, projects.length - 1)));
+  };
+
+  const handlePointerDown = (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    pointerStartRef.current = { x: event.clientX, y: event.clientY };
+  };
+
+  const handlePointerUp = (event) => {
+    const start = pointerStartRef.current;
+    pointerStartRef.current = null;
+    if (!start) return;
+
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    const horizontalDistance = Math.abs(deltaX);
+    const verticalDistance = Math.abs(deltaY);
+    const isIntentionalHorizontalSwipe =
+      horizontalDistance >= 56 && horizontalDistance > verticalDistance * 1.35;
+
+    if (!isIntentionalHorizontalSwipe) return;
+
+    goToProject(activeIndex + (deltaX < 0 ? 1 : -1));
+  };
+
+  const handlePointerCancel = () => {
+    pointerStartRef.current = null;
+  };
+
   return (
-    <div className="md:hidden">
+    <div className="mobile-projects md:hidden">
       <div
-        ref={carouselRef}
-        className="mobile-project-carousel mt-8 flex snap-x snap-mandatory overflow-x-auto scroll-smooth"
+        className="mobile-project-carousel relative mt-8 overflow-hidden"
         aria-label="Projetos"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
       >
-        {projects.map((project, index) => (
-          <div
-            key={project.titulo}
-            className={`w-full shrink-0 snap-center px-1 transition-opacity duration-500 ${
-              index === activeIndex ? "opacity-100" : "opacity-25"
-            }`}
-          >
-            <div className="mb-3 flex min-h-7 flex-wrap gap-2">
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[10px] text-[#C4C4C4] border border-white/10 rounded-full px-2.5 py-1"
-                >
-                  {tag}
-                </span>
-              ))}
+        <div
+          className="flex transition-transform duration-500 ease-out"
+          style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+        >
+          {projects.map((project) => (
+            <div key={project.titulo} className="w-full shrink-0 px-1">
+              <div className="mb-3 flex min-h-7 flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[10px] text-[#C4C4C4] border border-white/10 rounded-full px-2.5 py-1"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <ProjectCard project={project} index={0} mobile />
             </div>
-            <ProjectCard project={project} index={0} mobile />
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {activeIndex > 0 ? (
+          <button
+            type="button"
+            aria-label="Projeto anterior"
+            onClick={() => goToProject(activeIndex - 1)}
+            className="absolute left-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white shadow-lg"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+        ) : null}
+        {activeIndex < projects.length - 1 ? (
+          <button
+            type="button"
+            aria-label="Próximo projeto"
+            onClick={() => goToProject(activeIndex + 1)}
+            className="absolute right-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white shadow-lg"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        ) : null}
       </div>
       <div className="mt-4 flex justify-center gap-1.5" aria-hidden="true">
         {projects.map((project, index) => (
@@ -1515,7 +1552,7 @@ function Projects({ id }) {
           <h2 className="mt-4 text-white font-bold text-3xl sm:text-4xl">{t.projects.title}</h2>
         </Reveal>
 
-        <div className="mt-12 hidden md:block">
+        <div className="desktop-featured-project mt-12 hidden md:block">
           <FeaturedProject />
         </div>
 
@@ -1523,7 +1560,7 @@ function Projects({ id }) {
 
         <MobileProjectCarousel projects={mobileProjects} />
 
-        <div className="projects-carousel mt-8 hidden md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+        <div className="desktop-project-grid projects-carousel mt-8 hidden md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           {/* <- EDITAR: adicione novos projetos no array PROJECTS no topo do arquivo */}
           {filteredProjects.map((project, i) => (
             <ProjectCard key={project.titulo} project={project} index={4 + i} />
