@@ -58,22 +58,39 @@ function usePdfReady(url) {
 
 export default function Curriculo() {
   const status = usePdfReady(RESUME_PDF);
+  const [viewerVersion, setViewerVersion] = useState(0);
 
   useEffect(() => {
+    const viewport = document.querySelector('meta[name="viewport"]');
+    const defaultViewport = "width=device-width, initial-scale=1.0, viewport-fit=cover";
+    let orientationTimer;
+
     const resetViewportLayout = () => {
       document.documentElement.style.removeProperty("zoom");
       document.body.style.removeProperty("zoom");
+      document.documentElement.style.removeProperty("transform");
+      document.body.style.removeProperty("transform");
+      document.documentElement.style.removeProperty("width");
+      document.body.style.removeProperty("width");
+      if (viewport) viewport.setAttribute("content", defaultViewport);
     };
 
     resetViewportLayout();
-    window.addEventListener("orientationchange", resetViewportLayout);
-    window.addEventListener("resize", resetViewportLayout);
-    window.visualViewport?.addEventListener("resize", resetViewportLayout);
+    const remountViewer = () => {
+      window.clearTimeout(orientationTimer);
+      orientationTimer = window.setTimeout(() => {
+        resetViewportLayout();
+        setViewerVersion((version) => version + 1);
+      }, 100);
+    };
+
+    window.addEventListener("orientationchange", remountViewer);
+    window.addEventListener("resize", remountViewer);
 
     return () => {
-      window.removeEventListener("orientationchange", resetViewportLayout);
-      window.removeEventListener("resize", resetViewportLayout);
-      window.visualViewport?.removeEventListener("resize", resetViewportLayout);
+      window.clearTimeout(orientationTimer);
+      window.removeEventListener("orientationchange", remountViewer);
+      window.removeEventListener("resize", remountViewer);
     };
   }, []);
 
@@ -139,6 +156,7 @@ export default function Curriculo() {
 
         {status === "ready" ? (
           <object
+            key={viewerVersion}
             data={RESUME_PDF}
             type="application/pdf"
             aria-label={TEXT.viewerLabel}
