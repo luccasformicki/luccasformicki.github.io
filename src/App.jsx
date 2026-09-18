@@ -33,6 +33,8 @@ import {
   Loader2,
 } from "lucide-react";
 import { LangProvider, LanguageToggle, TRANSLATIONS, useLang } from "./i18n.jsx";
+import { ThemeProvider, ThemeToggle } from "./theme.jsx";
+import { ProjectStatsProvider, useProjectStats } from "./projectStats.jsx";
 import { RESUME_PAGE } from "./config.js";
 
 
@@ -151,52 +153,62 @@ const PRIMARY_TECHNOLOGIES = [
 ];
 
 // ---- Seção "Projetos" -------------------------------------------------------
+// `id` é a chave do projeto no Supabase (coluna `project_id` da tabela
+// `project_stats`) e também o sufixo das chaves `viewed:<id>` / `liked:<id>`
+// no localStorage. Precisa bater exatamente com a linha da tabela e não deve
+// mudar depois de publicado, senão os contadores recomeçam do zero.
+//
+// `projectUrl` é o destino do card. <- EDITAR: é só preencher quando o projeto
+// subir. Um caminho que começa com "/" é rota interna e abre na mesma aba;
+// qualquer URL com esquema (https://github.com/...) é externa e abre em nova
+// aba. Com `null`, o botão do desktop aparece desabilitado e o card do celular
+// não fica clicável — nunca existe link quebrado.
 const PROJETOS = [
   {
     destaque: true,
+    id: "sensitivity-finder",
     titulo: "Sensitivity Finder",
     status: "concluido",
     descricao:
       "Ferramenta para jogadores de CS e Valorant descobrirem a sensibilidade ideal de mira. Em vez de tentativa e erro, o jogador faz rodadas curtas de teste e o sistema analisa o desempenho para sugerir o valor que funciona melhor para ele.",
     tags: ["JavaScript", "HTML", "CSS"],
-    demo: null,
-    codigo: null,
+    projectUrl: null,
   },
   {
+    id: "extensao-acessibilidade",
     titulo: "Extensão de acessibilidade",
     status: "em-andamento",
     descricao:
       "Extensão de navegador que aplica ajustes de leitura em qualquer página: aumento de fonte, controle de contraste, espaçamento entre linhas e fonte para dislexia. A ideia é tornar a web utilizável para quem tem baixa visão sem depender de o site ter sido feito com acessibilidade.",
     tags: ["JavaScript", "HTML", "CSS", "Chrome Extensions API"],
-    demo: null,
-    codigo: null,
+    projectUrl: null,
   },
   {
+    id: "ecommerce-moda",
     titulo: "E-commerce de moda",
     status: "em-andamento",
     descricao:
       "Loja online para uma cliente do meu bairro: catálogo de produtos, carrinho e painel administrativo para ela gerenciar estoque e pedidos sozinha. Em fase final, aguardando hospedagem.",
     tags: [],
-    demo: null,
-    codigo: null,
+    projectUrl: null,
   },
   {
+    id: "site-recupcred",
     titulo: "Site institucional — Recupcred",
     status: "em-andamento",
     descricao:
       "Site institucional para a Recupcred, focado em apresentar os serviços da empresa e converter visitante em contato.",
     tags: [],
-    demo: null,
-    codigo: null,
+    projectUrl: null,
   },
   {
+    id: "plataforma-ingles",
     titulo: "Plataforma de estudo de inglês",
     status: "planejado",
     descricao:
       "Aplicação de estudo de inglês com foco em vocabulário e repetição espaçada. Nasceu de uma dificuldade minha — construir a ferramenta faz parte do processo de aprender.",
     tags: [],
-    demo: null,
-    codigo: null,
+    projectUrl: null,
   },
 ];
 
@@ -252,7 +264,7 @@ function GlassCard({ className = "", children, ...props }) {
   return (
     <div
       {...props}
-      className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl ${className}`}
+      className={`bg-ink/5 backdrop-blur-md border border-ink/10 rounded-2xl ${className}`}
     >
       {children}
     </div>
@@ -262,6 +274,56 @@ function GlassCard({ className = "", children, ...props }) {
 function scrollToSection(id) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+/* ---- Destino de um projeto -------------------------------------------------
+ * Um único campo (`projectUrl`) resolve os dois casos. Caminho que começa com
+ * "/" é rota interna do próprio site e abre na mesma aba; qualquer coisa com
+ * esquema ("https://github.com/...") ou "//" é externa e vai para uma aba nova
+ * com rel="noopener noreferrer". Deduzir pelo formato evita um segundo campo
+ * do tipo "é externo?", que poderia sair de sincronia com a URL. Sem URL, não
+ * há link: quem chama decide se desabilita ou esconde. ----------------------*/
+function projectLinkProps(projectUrl) {
+  if (!projectUrl) return null;
+  const external = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(projectUrl);
+  return external
+    ? { href: projectUrl, target: "_blank", rel: "noopener noreferrer" }
+    : { href: projectUrl };
+}
+
+/* ---- Botão único do card ---------------------------------------------------
+ * Sem `projectUrl`, aparece desabilitado em vez de sumir: os cards da grade
+ * mantêm a mesma altura e quem visita entende que ainda não há para onde ir,
+ * em vez de encontrar um link que não leva a lugar nenhum. ------------------*/
+function ProjectLinkButton({ project, className = "" }) {
+  const { t } = useLang();
+  const { registerView } = useProjectStats();
+  const link = projectLinkProps(project.projectUrl);
+  const shape = `text-center text-sm font-medium rounded-full px-5 py-2.5 transition-colors duration-300 ${className}`;
+
+  if (!link) {
+    return (
+      <button
+        type="button"
+        disabled
+        className={`${shape} cursor-not-allowed border border-ink/15 text-muted`}
+      >
+        {t.projects.viewProject}
+      </button>
+    );
+  }
+
+  // Conta antes de sair: a chamada é disparada e não aguardada, e como o
+  // destino externo abre em outra aba esta página segue viva para concluí-la.
+  return (
+    <a
+      {...link}
+      onClick={() => registerView(project.id)}
+      className={`${shape} bg-accent text-on-accent hover:bg-accent-hover`}
+    >
+      {t.projects.viewProject}
+    </a>
+  );
 }
 
 /* ---- Animação de entrada/saída sensível à direção da rolagem --------------*/
@@ -336,37 +398,81 @@ function Reveal({ index = 0, className = "", children }) {
 
 
 /* ---- Header fixo ------------------------------------------------------------*/
+// Distância a partir da qual a barra deixa de se considerar "no topo". Acima
+// de zero de propósito: o rubber-band do iOS devolve scrollY negativo e um
+// piso exato ficaria ligando e desligando o PT/EN no fim da rolagem.
+const HEADER_TOP_THRESHOLD_PX = 16;
+
+function useAtPageTop() {
+  const [atTop, setAtTop] = useState(true);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      setAtTop(window.scrollY <= HEADER_TOP_THRESHOLD_PX);
+    };
+
+    // Mesma cadência do scroll-spy do App: um rAF por quadro, nunca um
+    // setState por evento de rolagem.
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return atTop;
+}
+
 function Header() {
   const { t } = useLang();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const atTop = useAtPageTop();
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-black/85 backdrop-blur-md md:bg-transparent md:backdrop-blur-none">
+    <header className="fixed top-0 left-0 right-0 z-40">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-6">
         <button
           onClick={() => scrollToSection("hero")}
-          className="text-white font-bold tracking-tight text-lg hover:text-[#B026B0] transition-colors duration-300"
+          className="text-ink font-bold tracking-tight text-lg hover:text-accent transition-colors duration-300"
         >
           {PROFILE.name} {/* <- EDITAR: exibido também como "logo" */}
         </button>
 
         <div className="flex items-center gap-3 md:gap-5">
-          <div className={`${mobileMenuOpen ? "flex" : "hidden"} md:flex items-center gap-3 md:gap-5`}>
-            <LanguageToggle />
-            <button
-              onClick={() => scrollToSection("contato")}
-              className="text-sm text-white border border-white/40 rounded-full px-5 py-2 hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
-            >
-              {t.header.contact}
-            </button>
-          </div>
-          <button
-            type="button"
-            aria-label={mobileMenuOpen ? "Fechar opções" : "Abrir opções"}
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((open) => !open)}
-            className="md:hidden flex h-9 w-9 items-center justify-center text-white hover:text-[#B026B0] transition-colors duration-300"
+          <ThemeToggle />
+
+          {/* No celular o PT/EN só existe no topo da página. Ao sair dali ele
+              some com fade E encolhe a largura junto: só o fade deixaria um
+              vão morto à direita do botão de tema. O -ml-3 come o gap-3 que
+              sobraria depois de encolher, para o botão encostar na margem sem
+              pular. `visibility` entra na transição porque tira o seletor da
+              ordem de tabulação sem cortar o fade — ela só vira `hidden` no
+              fim. O max-w de 80px é a largura medida do seletor (79,06px, a
+              mesma em pt e en, porque os rótulos têm duas letras fixas): é o
+              que faz a largura animar até zero em vez de saltar. Nada disso
+              vale a partir de md:. */}
+          <div
+            className={`overflow-hidden transition-[opacity,max-width,margin,visibility] duration-300 ease-out md:visible md:ml-0 md:max-w-none md:opacity-100 ${
+              atTop
+                ? "max-w-[80px] opacity-100"
+                : "invisible -ml-3 max-w-0 opacity-0"
+            }`}
           >
-            <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${mobileMenuOpen ? "rotate-180" : ""}`} />
+            <LanguageToggle />
+          </div>
+
+          <button
+            onClick={() => scrollToSection("contato")}
+            className="hidden md:inline-flex text-sm text-ink border border-ink/40 rounded-full px-5 py-2 hover:border-accent hover:text-accent transition-colors duration-300"
+          >
+            {t.header.contact}
           </button>
         </div>
       </div>
@@ -393,7 +499,7 @@ function SectionSidebar({ activeIndex }) {
             onClick={() => scrollToSection(section.id)}
             style={{ height: SIDEBAR_ITEM_HEIGHT }}
             className={`flex items-center justify-center text-xs tracking-widest font-medium transition-colors duration-300 ${
-              index === activeIndex ? "text-white" : "text-[#666666] hover:text-white/70"
+              index === activeIndex ? "text-ink" : "text-muted hover:text-ink/70"
             }`}
             aria-label={t.nav[section.id]}
             aria-current={index === activeIndex ? "true" : undefined}
@@ -405,9 +511,9 @@ function SectionSidebar({ activeIndex }) {
 
       {/* trilho vertical, à direita dos números */}
       <div className="relative w-px" style={{ height: trackHeight }}>
-        <div className="absolute inset-0 bg-[#3A3A3A]" />
+        <div className="absolute inset-0 bg-rail" />
         <div
-          className="absolute left-0 w-px bg-white shadow-[0_0_8px_2px_rgba(255,255,255,0.5)] transition-[top] duration-300 ease-out"
+          className="absolute left-0 w-px bg-ink shadow-[0_0_8px_2px_var(--c-rail-glow)] transition-[top] duration-300 ease-out"
           style={{ height: SIDEBAR_ITEM_HEIGHT, top: activeTop }}
         />
       </div>
@@ -426,7 +532,7 @@ function ScrollDownHint({ activeIndex }) {
       type="button"
       onClick={() => scrollToSection(nextSection.id)}
       aria-label={isLastSection ? t.backToTop : t.scrollDown}
-      className="fixed bottom-8 right-4 min-[995px]:right-10 z-40 hidden min-[995px]:flex flex-col items-center gap-3 text-white/50 hover:text-white transition-colors duration-300"
+      className="fixed bottom-8 right-4 min-[995px]:right-10 z-40 hidden min-[995px]:flex flex-col items-center gap-3 text-muted hover:text-ink transition-colors duration-300"
     >
       <span
         className="text-[10px] tracking-[0.3em] select-none"
@@ -435,9 +541,9 @@ function ScrollDownHint({ activeIndex }) {
         {isLastSection ? t.backToTop : t.scrollDown}
       </span>
       {isLastSection ? (
-        <ArrowUp className="w-4 h-4 text-[#B026B0]" />
+        <ArrowUp className="w-4 h-4 text-accent" />
       ) : (
-        <ArrowDown className="w-4 h-4 text-[#B026B0] animate-bounce" />
+        <ArrowDown className="w-4 h-4 text-accent animate-bounce" />
       )}
     </button>
   );
@@ -452,7 +558,7 @@ function GithubFloatingButton({ hidden }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t.githubAria}
-      className={`${hidden ? "hidden" : "flex"} fixed bottom-8 left-6 md:left-10 z-40 w-12 h-12 rounded-full bg-white/5 backdrop-blur-md border border-white/10 items-center justify-center text-white hover:border-[#B026B0] hover:text-[#B026B0] hover:scale-105 transition-all duration-300`}
+      className={`${hidden ? "hidden" : "flex"} fixed bottom-8 left-6 md:left-10 z-40 w-12 h-12 rounded-full bg-ink/5 backdrop-blur-md border border-ink/10 items-center justify-center text-ink hover:border-accent hover:text-accent hover:scale-105 transition-all duration-300`}
     >
       <Github className="w-5 h-5" />
     </a>
@@ -879,13 +985,13 @@ function HeroCodeAnimation() {
   };
 
   return (
-    <div className="code-anim relative flex w-full max-w-md aspect-square flex-col overflow-hidden rounded-3xl border border-[color:var(--code-border)] bg-[color:var(--code-bg)] shadow-[0_24px_70px_rgba(0,0,0,0.55)]">
+    <div className="code-anim relative flex w-full max-w-md aspect-square flex-col overflow-hidden rounded-3xl border border-[color:var(--code-border)] bg-[color:var(--code-bg)] shadow-[0_24px_70px_var(--code-shadow)]">
       {/* barra de título estilo editor */}
       <div className="flex shrink-0 items-center gap-[7px] border-b border-[color:var(--code-border)] bg-[color:var(--code-bar)] px-3.5 py-[11px]">
         <span className="h-[11px] w-[11px] rounded-full bg-[#ff5f57]" />
         <span className="h-[11px] w-[11px] rounded-full bg-[#febc2e]" />
         <span className="h-[11px] w-[11px] rounded-full bg-[#28c840]" />
-        <span className="ml-2.5 font-mono text-[11.5px] text-[#6d6480]">
+        <span className="ml-2.5 font-mono text-[11.5px] text-[color:var(--code-filename)]">
           portfolio.py
         </span>
       </div>
@@ -934,7 +1040,7 @@ function HeroCodeAnimation() {
           fixos, definidos na folha e não a partir do tamanho do texto. */}
       {!reducedMotion && !atBottom ? (
         <div className="pointer-events-none absolute bottom-3.5 right-1">
-          <span className="inline-flex items-center gap-3 whitespace-nowrap rounded-full border border-[#3a2f52] bg-[#201a2e] py-1.5 pl-[52px] pr-3 text-[10px] text-[#b9b1cc] sm:text-[11.5px]">
+          <span className="inline-flex items-center gap-3 whitespace-nowrap rounded-full border border-[color:var(--code-pill-border)] bg-[color:var(--code-pill-bg)] py-1.5 pl-[52px] pr-3 text-[10px] text-[color:var(--code-pill-text)] sm:text-[11.5px]">
             {t.hero.codePaused}
             <span aria-hidden="true" className="w-[26px] shrink-0" />
           </span>
@@ -962,14 +1068,14 @@ function Hero({ id }) {
         <div className="order-2 md:order-1">
           <Reveal index={1} className="inline-flex items-center gap-2.5">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-live-ping opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-live" />
             </span>
-            <span className="text-[#C4C4C4] text-xs font-light">{t.hero.available}</span>
+            <span className="text-body text-xs font-light">{t.hero.available}</span>
           </Reveal>
 
           <Reveal index={2}>
-            <h1 className="mt-6 text-white font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight">
+            <h1 className="mt-6 text-ink font-bold text-4xl sm:text-5xl lg:text-6xl leading-tight">
               {PROFILE.role[lang][0]}
               <br />
               {PROFILE.role[lang][1]}
@@ -977,7 +1083,7 @@ function Hero({ id }) {
           </Reveal>
 
           <Reveal index={3}>
-            <p className="mt-6 max-w-md text-[#C4C4C4] font-light text-sm leading-relaxed">
+            <p className="mt-6 max-w-md text-body font-light text-sm leading-relaxed">
               {PROFILE.tagline[lang]}
             </p>
           </Reveal>
@@ -985,7 +1091,7 @@ function Hero({ id }) {
           <Reveal index={4} className="mt-8 flex flex-wrap items-center gap-6">
             <button
               onClick={() => scrollToSection("sobre")}
-              className="inline-flex items-center gap-2 text-[#B026B0] text-sm font-medium group"
+              className="inline-flex items-center gap-2 text-accent text-sm font-medium group"
             >
               {t.hero.aboutLink}
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -994,7 +1100,7 @@ function Hero({ id }) {
             {/* No mobile, mantém a navegação na aba atual. */}
             <a
               href={RESUME_PAGE}
-              className="inline-flex md:hidden items-center gap-2 text-sm text-white border border-white/30 rounded-full px-5 py-2.5 hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
+              className="inline-flex md:hidden items-center gap-2 text-sm text-ink border border-ink/30 rounded-full px-5 py-2.5 hover:border-accent hover:text-accent transition-colors duration-300"
             >
               <Download className="w-4 h-4" />
               {t.hero.resumeButton}
@@ -1004,7 +1110,7 @@ function Hero({ id }) {
               href={RESUME_PAGE}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:inline-flex items-center gap-2 text-sm text-white border border-white/30 rounded-full px-5 py-2.5 hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
+              className="hidden md:inline-flex items-center gap-2 text-sm text-ink border border-ink/30 rounded-full px-5 py-2.5 hover:border-accent hover:text-accent transition-colors duration-300"
             >
               <Download className="w-4 h-4" />
               {t.hero.resumeButton}
@@ -1035,25 +1141,25 @@ function About({ id }) {
               height="480"
               loading="lazy"
               decoding="async"
-              className="w-full max-w-sm mx-auto md:mx-0 rounded-3xl border border-white/10 object-cover aspect-[6/7]"
+              className="w-full max-w-sm mx-auto md:mx-0 rounded-3xl border border-ink/10 object-cover aspect-[6/7]"
             />
           </picture>
         </Reveal>
 
         <div className="order-2 md:order-2">
           <Reveal index={1}>
-            <span className="text-[#B026B0] text-xs font-medium tracking-[0.3em]">
+            <span className="text-accent text-xs font-medium tracking-[0.3em]">
               {t.about.eyebrow}
             </span>
           </Reveal>
           <Reveal index={2}>
-            <h2 className="mt-4 text-white font-bold text-3xl sm:text-4xl">{t.about.title}</h2>
+            <h2 className="mt-4 text-ink font-bold text-3xl sm:text-4xl">{t.about.title}</h2>
           </Reveal>
 
           <div className="mt-6 space-y-4">
             {ABOUT.paragraphs[lang].map((p, i) => (
               <Reveal index={3 + i} key={i}>
-                <p className="text-[#C4C4C4] font-light text-sm leading-relaxed">{p}</p>
+                <p className="text-body font-light text-sm leading-relaxed">{p}</p>
               </Reveal>
             ))}
           </div>
@@ -1069,28 +1175,28 @@ function Experience({ id }) {
     <AnimatedSection id={id} className="min-h-screen flex items-center px-6 md:px-10 py-24">
       <div className="max-w-4xl mx-auto w-full">
         <Reveal index={0}>
-          <span className="text-[#B026B0] text-xs font-medium tracking-[0.3em]">
+          <span className="text-accent text-xs font-medium tracking-[0.3em]">
             {t.experience.eyebrow}
           </span>
         </Reveal>
         <Reveal index={1}>
-          <h2 className="mt-4 text-white font-bold text-3xl sm:text-4xl">
+          <h2 className="mt-4 text-ink font-bold text-3xl sm:text-4xl">
             {t.experience.title}
           </h2>
         </Reveal>
 
-        <div className="mt-14 relative border-l border-white/10 pl-8 ml-2 space-y-12">
+        <div className="mt-14 relative border-l border-ink/10 pl-8 ml-2 space-y-12">
           {EXPERIENCE.map((exp, i) => (
             <Reveal index={2 + i} key={exp.id} className="relative">
-              <span className="absolute -left-[41px] top-1.5 w-3 h-3 rounded-full bg-[#B026B0] ring-4 ring-[#0D0D0D]" />
+              <span className="absolute -left-[41px] top-1.5 w-3 h-3 rounded-full bg-accent ring-4 ring-bg" />
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="text-white font-bold text-lg">{exp.company}</h3>
-                <span className="text-[#B026B0] text-xs font-medium tracking-wide">
+                <h3 className="text-ink font-bold text-lg">{exp.company}</h3>
+                <span className="text-accent text-xs font-medium tracking-wide">
                   {exp.period[lang]}
                 </span>
               </div>
-              <p className="mt-1 text-[#C4C4C4] text-sm font-light">{exp.role[lang]}</p>
-              <p className="mt-3 text-[#C4C4C4]/80 text-sm font-light leading-relaxed max-w-xl">
+              <p className="mt-1 text-body text-sm font-light">{exp.role[lang]}</p>
+              <p className="mt-3 text-body/80 text-sm font-light leading-relaxed max-w-xl">
                 {exp.description[lang]}
               </p>
             </Reveal>
@@ -1106,13 +1212,13 @@ function TechCard({ tech, index }) {
   const Icon = TECHNOLOGY_ICONS[tech.nome];
   return (
     <Reveal index={index}>
-      <GlassCard className="h-full flex flex-col items-center text-center gap-4 py-10 px-4 hover:border-[#B026B0]/50 hover:bg-white/[0.07] transition-all duration-300">
-        <Icon className="w-7 h-7 text-white" strokeWidth={1.5} />
-        <span className="text-[#C4C4C4] text-sm font-light">{tech.nome}</span>
+      <GlassCard className="h-full flex flex-col items-center text-center gap-4 py-10 px-4 hover:border-accent/50 hover:bg-ink/[0.07] transition-all duration-300">
+        <Icon className="w-7 h-7 text-ink" strokeWidth={1.5} />
+        <span className="text-body text-sm font-light">{tech.nome}</span>
         {/* Espaço reservado para o botão de certificado, mantém os cards alinhados */}
         <div className="mt-auto pt-2 h-9 flex items-center">
           {tech.status === "em-andamento" ? (
-            <span className="text-[10px] text-[#C4C4C4]/70 border border-white/15 rounded-full px-3 py-1.5">
+            <span className="text-[10px] text-body/70 border border-ink/15 rounded-full px-3 py-1.5">
               {t.skills.certificationInProgress}
             </span>
           ) : tech.certificado !== null ? (
@@ -1120,7 +1226,7 @@ function TechCard({ tech, index }) {
               href={tech.certificado}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs text-white border border-white/30 rounded-full px-3.5 py-1.5 hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
+              className="inline-flex items-center gap-1.5 text-xs text-ink border border-ink/30 rounded-full px-3.5 py-1.5 hover:border-accent hover:text-accent transition-colors duration-300"
             >
               <Award className="w-3.5 h-3.5" />
               {t.skills.certificateButton}
@@ -1144,12 +1250,12 @@ function Skills({ id }) {
     <AnimatedSection id={id} className="min-h-screen flex items-center px-6 md:px-10 py-24">
       <div className="max-w-7xl mx-auto w-full">
         <Reveal index={0}>
-          <span className="text-[#B026B0] text-xs font-medium tracking-[0.3em]">
+          <span className="text-accent text-xs font-medium tracking-[0.3em]">
             {t.skills.eyebrow}
           </span>
         </Reveal>
         <Reveal index={1}>
-          <h2 className="mt-4 text-white font-bold text-3xl sm:text-4xl">{t.skills.title}</h2>
+          <h2 className="mt-4 text-ink font-bold text-3xl sm:text-4xl">{t.skills.title}</h2>
         </Reveal>
 
         <div className="desktop-technologies mt-12 hidden md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 auto-rows-fr">
@@ -1167,7 +1273,7 @@ function Skills({ id }) {
           <button
             type="button"
             onClick={() => setShowAllTechnologies((showAll) => !showAll)}
-            className="mx-auto mt-6 flex items-center gap-2 text-xs text-[#C4C4C4] border border-white/20 rounded-full px-4 py-2 hover:border-[#B026B0] hover:text-white transition-colors duration-300"
+            className="mx-auto mt-6 flex items-center gap-2 text-xs text-body border border-ink/20 rounded-full px-4 py-2 hover:border-accent hover:text-ink transition-colors duration-300"
           >
             {showAllTechnologies ? "Mostrar menos" : "Ver todas as tecnologias"}
             <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${showAllTechnologies ? "rotate-180" : ""}`} />
@@ -1189,14 +1295,14 @@ function FeaturedProject() {
           className="w-full h-full object-cover aspect-video md:aspect-auto"
         />
         <div className="p-8 md:p-10 flex flex-col justify-center">
-          <span className="text-[#B026B0] text-xs font-medium tracking-[0.3em]">
+          <span className="text-accent text-xs font-medium tracking-[0.3em]">
             {t.projects.featuredLabel}
           </span>
-          <h3 className="mt-3 text-white font-bold text-2xl sm:text-3xl">
+          <h3 className="mt-3 text-ink font-bold text-2xl sm:text-3xl">
             {FEATURED_PROJECT.titulo}
           </h3>
           <ProjectStatusBadge status={FEATURED_PROJECT.status} />
-          <p className="mt-4 text-[#C4C4C4] font-light text-sm leading-relaxed">
+          <p className="mt-4 text-body font-light text-sm leading-relaxed">
             {FEATURED_PROJECT.descricao}
           </p>
 
@@ -1204,7 +1310,7 @@ function FeaturedProject() {
             {FEATURED_PROJECT.tags.map((techName) => (
               <span
                 key={techName}
-                className="text-xs text-[#C4C4C4] border border-white/10 rounded-full px-3 py-1"
+                className="text-xs text-body border border-ink/10 rounded-full px-3 py-1"
               >
                 {techName}
               </span>
@@ -1212,16 +1318,7 @@ function FeaturedProject() {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            {FEATURED_PROJECT.demo || FEATURED_PROJECT.codigo ? (
-              <a
-                href={FEATURED_PROJECT.demo || FEATURED_PROJECT.codigo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm font-medium bg-[#B026B0] text-white rounded-full px-5 py-2.5 hover:bg-[#c136c1] transition-colors duration-300"
-              >
-                Ver mais
-              </a>
-            ) : null}
+            <ProjectLinkButton project={FEATURED_PROJECT} />
           </div>
         </div>
       </GlassCard>
@@ -1232,9 +1329,9 @@ function FeaturedProject() {
 function ProjectStatusBadge({ status }) {
   const { t } = useLang();
   const statusStyles = {
-    concluido: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
-    "em-andamento": "border-[#B026B0]/40 bg-[#B026B0]/10 text-[#d77ad7]",
-    planejado: "border-white/15 bg-white/5 text-white/55",
+    concluido: "border-ok/30 bg-ok/10 text-ok",
+    "em-andamento": "border-accent/40 bg-accent/10 text-accent-soft",
+    planejado: "border-ink/15 bg-ink/5 text-muted",
   };
 
   return (
@@ -1254,8 +1351,8 @@ function ProjectFilter({ techs, active, onChange }) {
         onClick={() => onChange(t.projects.filterAll)}
         className={`text-xs font-medium rounded-full px-4 py-2 transition-colors duration-300 ${
           active === t.projects.filterAll
-            ? "bg-[#B026B0] text-white"
-            : "text-[#C4C4C4] border border-white/20 hover:border-[#B026B0] hover:text-[#B026B0]"
+            ? "bg-accent text-on-accent"
+            : "text-body border border-ink/20 hover:border-accent hover:text-accent"
         }`}
       >
         {t.projects.filterAll}
@@ -1266,8 +1363,8 @@ function ProjectFilter({ techs, active, onChange }) {
           onClick={() => onChange(techName)}
           className={`text-xs font-medium rounded-full px-4 py-2 transition-colors duration-300 ${
             active === techName
-              ? "bg-[#B026B0] text-white"
-              : "text-[#C4C4C4] border border-white/20 hover:border-[#B026B0] hover:text-[#B026B0]"
+              ? "bg-accent text-on-accent"
+              : "text-body border border-ink/20 hover:border-accent hover:text-accent"
           }`}
         >
           {techName}
@@ -1279,23 +1376,25 @@ function ProjectFilter({ techs, active, onChange }) {
 
 function ProjectCard({ project, index, mobile = false }) {
   const { lang, t } = useLang();
-  const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(project.likes ?? 0);
-  const projectUrl = project.demo || project.codigo;
+  const { getStats, hasLiked, like, registerView } = useProjectStats();
+  const { views, likes } = getStats(project.id);
+  const liked = hasLiked(project.id);
+  const link = projectLinkProps(project.projectUrl);
   const pointerStartRef = useRef(null);
   const wasDraggedRef = useRef(false);
 
-  const toggleLike = () => {
-    setLiked((prev) => !prev);
-    setLikes((prev) => (liked ? prev - 1 : prev + 1));
-  };
-
+  // Único caminho de abertura no celular, onde o card inteiro é o link. Sem
+  // `link` não há para onde ir, então também não há visualização a contar.
   const openProject = () => {
-    if (mobile && projectUrl) window.open(projectUrl, "_blank", "noopener,noreferrer");
+    if (!mobile || !link) return;
+    registerView(project.id);
+    // Externo abre em aba nova; rota interna segue na mesma aba.
+    if (link.target === "_blank") window.open(link.href, "_blank", "noopener,noreferrer");
+    else window.location.assign(link.href);
   };
 
   const handleProjectKeyDown = (event) => {
-    if (mobile && projectUrl && (event.key === "Enter" || event.key === " ")) {
+    if (mobile && link && (event.key === "Enter" || event.key === " ")) {
       event.preventDefault();
       openProject();
     }
@@ -1335,10 +1434,10 @@ function ProjectCard({ project, index, mobile = false }) {
         onPointerUp={handlePointerEnd}
         onPointerCancel={handlePointerEnd}
         onKeyDown={handleProjectKeyDown}
-        role={mobile && projectUrl ? "link" : undefined}
-        tabIndex={mobile && projectUrl ? 0 : undefined}
-        className={`group overflow-hidden flex flex-col hover:border-white/20 transition-colors duration-300 ${
-          mobile && projectUrl ? "cursor-pointer" : ""
+        role={mobile && link ? "link" : undefined}
+        tabIndex={mobile && link ? 0 : undefined}
+        className={`group h-full overflow-hidden flex flex-col hover:border-ink/20 transition-colors duration-300 ${
+          mobile && link ? "cursor-pointer" : ""
         }`}
       >
         <div className="relative overflow-hidden">
@@ -1352,34 +1451,35 @@ function ProjectCard({ project, index, mobile = false }) {
           <button
             onClick={(event) => {
               event.stopPropagation();
-              toggleLike();
+              like(project.id);
             }}
             aria-label="Curtir projeto"
+            aria-pressed={liked}
             className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center transition-transform duration-200 hover:scale-110"
           >
             <Heart
               className={`w-4 h-4 transition-colors duration-200 ${
-                liked ? "fill-[#B026B0] text-[#B026B0]" : "text-white"
+                liked ? "fill-accent text-accent" : "text-white"
               }`}
             />
           </button>
 
           {/* Contador de visualizações, fade-in apenas no hover */}
           <div
-            className="absolute bottom-3 left-3 flex items-center gap-1.5 text-white text-xs bg-black/50 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            aria-label={`${(project.views ?? 0).toLocaleString(lang === "pt" ? "pt-BR" : "en-US")} ${
+            className="absolute bottom-3 left-3 flex items-center gap-1.5 text-white text-xs bg-black/50 backdrop-blur-md border border-white/10 rounded-full px-3 py-1 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100"
+            aria-label={`${views.toLocaleString(lang === "pt" ? "pt-BR" : "en-US")} ${
               t.projects.viewsLabel
             }`}
           >
             <Eye className="w-3.5 h-3.5" />
-            {(project.views ?? 0).toLocaleString(lang === "pt" ? "pt-BR" : "en-US")}
+            {views.toLocaleString(lang === "pt" ? "pt-BR" : "en-US")}
           </div>
         </div>
 
         <div className="p-6 flex flex-col flex-1">
-          <h3 className="text-white font-bold text-lg">{project.titulo}</h3>
+          <h3 className="text-ink font-bold text-lg">{project.titulo}</h3>
           <ProjectStatusBadge status={project.status} />
-          <p className="mt-2 text-[#C4C4C4] text-sm font-light leading-relaxed flex-1">
+          <p className="mt-2 text-body text-sm font-light leading-relaxed flex-1">
             {project.descricao}
           </p>
 
@@ -1388,7 +1488,7 @@ function ProjectCard({ project, index, mobile = false }) {
               {project.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="text-[10px] text-[#C4C4C4] border border-white/10 rounded-full px-2.5 py-1"
+                  className="text-[10px] text-body border border-ink/10 rounded-full px-2.5 py-1"
                 >
                   {tag}
                 </span>
@@ -1396,22 +1496,13 @@ function ProjectCard({ project, index, mobile = false }) {
             </div>
           ) : null}
 
-          <div className="mt-3 flex items-center gap-1.5 text-white/40 text-xs">
+          <div className="mt-3 flex items-center gap-1.5 text-muted text-xs">
             <Heart className="w-3 h-3" />
             {likes} {t.projects.likesLabel}
           </div>
 
           <div className="mt-6 hidden items-center gap-3 md:flex">
-            {project.demo || project.codigo ? (
-              <a
-                href={project.demo || project.codigo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full text-center text-sm font-medium bg-[#B026B0] text-white rounded-full px-4 py-2.5 hover:bg-[#c136c1] transition-colors duration-300"
-              >
-                Ver mais
-              </a>
-            ) : null}
+            <ProjectLinkButton project={project} className="w-full" />
           </div>
         </div>
       </GlassCard>
@@ -1460,31 +1551,45 @@ function MobileProjectCarousel({ projects }) {
   return (
     <div className="mobile-projects md:hidden">
       <div
-        className="mobile-project-carousel relative mt-8 overflow-hidden"
+        className="mobile-project-carousel relative mt-8"
         aria-label="Projetos"
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerCancel}
       >
-        <div
-          className="flex transition-transform duration-500 ease-out"
-          style={{ transform: `translateX(-${activeIndex * 100}%)` }}
-        >
-          {projects.map((project) => (
-            <div key={project.titulo} className="w-full shrink-0 px-1">
-              <div className="mb-3 flex min-h-7 flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-[10px] text-[#C4C4C4] border border-white/10 rounded-full px-2.5 py-1"
-                  >
-                    {tag}
-                  </span>
-                ))}
+        {/* Crossfade em vez de trilho deslizante: todos os cards ocupam a
+            MESMA célula da grade, um por cima do outro. Como o card oculto usa
+            `visibility` (e não `display`), ele continua ocupando espaço, então
+            a altura do container é sempre a do card mais alto e não muda
+            durante a troca — nem quando o projeto que entra tem descrição de
+            tamanho diferente. `visibility` também tira o card escondido da
+            ordem de tabulação, e entra na transição porque o CSS a mantém
+            `visible` durante todo o percurso: o fade não é cortado. */}
+        <div className="grid">
+          {projects.map((project, index) => {
+            const active = index === activeIndex;
+            return (
+              <div
+                key={project.titulo}
+                aria-hidden={!active}
+                className={`[grid-column:1] [grid-row:1] px-1 transition-[opacity,visibility] duration-300 ease-out ${
+                  active ? "opacity-100" : "invisible opacity-0 pointer-events-none"
+                }`}
+              >
+                <div className="mb-3 flex min-h-7 flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[10px] text-body border border-ink/10 rounded-full px-2.5 py-1"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <ProjectCard project={project} index={0} mobile />
               </div>
-              <ProjectCard project={project} index={0} mobile />
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {activeIndex > 0 ? (
@@ -1492,7 +1597,7 @@ function MobileProjectCarousel({ projects }) {
             type="button"
             aria-label="Projeto anterior"
             onClick={() => goToProject(activeIndex - 1)}
-            className="absolute left-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white shadow-lg"
+            className="absolute left-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-ink/20 bg-bg/70 text-ink shadow-lg"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
@@ -1502,7 +1607,7 @@ function MobileProjectCarousel({ projects }) {
             type="button"
             aria-label="Próximo projeto"
             onClick={() => goToProject(activeIndex + 1)}
-            className="absolute right-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white shadow-lg"
+            className="absolute right-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-ink/20 bg-bg/70 text-ink shadow-lg"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -1513,7 +1618,7 @@ function MobileProjectCarousel({ projects }) {
           <span
             key={project.titulo}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              index === activeIndex ? "w-6 bg-[#B026B0]" : "w-1.5 bg-white/25"
+              index === activeIndex ? "w-6 bg-accent" : "w-1.5 bg-ink/25"
             }`}
           />
         ))}
@@ -1551,12 +1656,12 @@ function Projects({ id }) {
     <AnimatedSection id={id} className="min-h-screen px-6 md:px-10 py-24">
       <div className="max-w-7xl mx-auto w-full">
         <Reveal index={0}>
-          <span className="text-[#B026B0] text-xs font-medium tracking-[0.3em]">
+          <span className="text-accent text-xs font-medium tracking-[0.3em]">
             {t.projects.eyebrow}
           </span>
         </Reveal>
         <Reveal index={1}>
-          <h2 className="mt-4 text-white font-bold text-3xl sm:text-4xl">{t.projects.title}</h2>
+          <h2 className="mt-4 text-ink font-bold text-3xl sm:text-4xl">{t.projects.title}</h2>
         </Reveal>
 
         <div className="desktop-featured-project mt-12 hidden md:block">
@@ -1567,7 +1672,10 @@ function Projects({ id }) {
 
         <MobileProjectCarousel projects={mobileProjects} />
 
-        <div className="desktop-project-grid projects-carousel mt-8 hidden md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+        {/* auto-rows-fr iguala a altura dos cards da linha; é o que faz o
+            flex-1 da descrição empurrar o botão para a base em todos eles,
+            como já acontece na grade de tecnologias. */}
+        <div className="desktop-project-grid projects-carousel mt-8 hidden auto-rows-fr md:grid md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           {/* <- EDITAR: adicione novos projetos no array PROJECTS no topo do arquivo */}
           {filteredProjects.map((project, i) => (
             <ProjectCard key={project.titulo} project={project} index={4 + i} />
@@ -1644,15 +1752,15 @@ function Contact({ id }) {
     <AnimatedSection id={id} className="min-h-screen flex items-center px-6 md:px-10 py-24">
       <div className="max-w-4xl mx-auto w-full">
         <Reveal index={0}>
-          <span className="text-[#B026B0] text-xs font-medium tracking-[0.3em]">
+          <span className="text-accent text-xs font-medium tracking-[0.3em]">
             {t.contact.eyebrow}
           </span>
         </Reveal>
         <Reveal index={1}>
-          <h2 className="mt-4 text-white font-bold text-3xl sm:text-4xl">{t.contact.title}</h2>
+          <h2 className="mt-4 text-ink font-bold text-3xl sm:text-4xl">{t.contact.title}</h2>
         </Reveal>
         <Reveal index={2}>
-          <p className="mt-4 text-[#C4C4C4] font-light text-sm max-w-md">{t.contact.subtitle}</p>
+          <p className="mt-4 text-body font-light text-sm max-w-md">{t.contact.subtitle}</p>
         </Reveal>
 
         <div className="mt-10 grid md:grid-cols-[1.3fr_1fr] gap-10">
@@ -1665,7 +1773,7 @@ function Contact({ id }) {
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-3 text-white text-sm placeholder:text-white/30 outline-none focus:border-[#B026B0] transition-colors duration-300"
+                className="w-full bg-ink/5 backdrop-blur-md border border-ink/10 rounded-xl px-5 py-3 text-ink text-sm placeholder:text-faint outline-none focus:border-accent transition-colors duration-300"
               />
               <input
                 type="email"
@@ -1674,7 +1782,7 @@ function Contact({ id }) {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-3 text-white text-sm placeholder:text-white/30 outline-none focus:border-[#B026B0] transition-colors duration-300"
+                className="w-full bg-ink/5 backdrop-blur-md border border-ink/10 rounded-xl px-5 py-3 text-ink text-sm placeholder:text-faint outline-none focus:border-accent transition-colors duration-300"
               />
               <textarea
                 name="message"
@@ -1683,7 +1791,7 @@ function Contact({ id }) {
                 value={form.message}
                 onChange={handleChange}
                 required
-                className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-3 text-white text-sm placeholder:text-white/30 outline-none focus:border-[#B026B0] transition-colors duration-300 resize-none"
+                className="w-full bg-ink/5 backdrop-blur-md border border-ink/10 rounded-xl px-5 py-3 text-ink text-sm placeholder:text-faint outline-none focus:border-accent transition-colors duration-300 resize-none"
               />
               <input
                 type="text"
@@ -1697,7 +1805,7 @@ function Contact({ id }) {
               <button
                 type="submit"
                 disabled={submitState === "submitting"}
-                className="inline-flex items-center gap-2 bg-[#B026B0] text-white text-sm font-medium rounded-full px-6 py-3 hover:bg-[#c136c1] disabled:cursor-not-allowed disabled:opacity-60 transition-colors duration-300"
+                className="inline-flex items-center gap-2 bg-accent text-on-accent text-sm font-medium rounded-full px-6 py-3 hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60 transition-colors duration-300"
               >
                 {submitState === "submitting" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -1708,16 +1816,16 @@ function Contact({ id }) {
               </button>
 
               {submitState === "success" ? (
-                <p className="text-emerald-300 text-xs pt-1">{t.contact.successNotice}</p>
+                <p className="text-ok text-xs pt-1">{t.contact.successNotice}</p>
               ) : null}
               {submitState === "error" ? (
-                <p className="text-red-300 text-xs pt-1">
+                <p className="text-danger text-xs pt-1">
                   {t.contact.errorNotice}{" "}
                   <a
                     href={`mailto:${PROFILE.email}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline hover:text-white"
+                    className="underline hover:text-ink"
                   >
                     {PROFILE.email}
                   </a>
@@ -1731,7 +1839,7 @@ function Contact({ id }) {
               href={`mailto:${PROFILE.email}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-4 text-sm text-white hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
+              className="flex items-center gap-3 bg-ink/5 backdrop-blur-md border border-ink/10 rounded-xl px-5 py-4 text-sm text-ink hover:border-accent hover:text-accent transition-colors duration-300"
             >
               <Mail className="w-4 h-4" />
               {PROFILE.email}
@@ -1740,7 +1848,7 @@ function Contact({ id }) {
               href={PROFILE.linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-4 text-sm text-white hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
+              className="flex items-center gap-3 bg-ink/5 backdrop-blur-md border border-ink/10 rounded-xl px-5 py-4 text-sm text-ink hover:border-accent hover:text-accent transition-colors duration-300"
             >
               <Linkedin className="w-4 h-4" />
               {t.contact.linkedin}
@@ -1749,16 +1857,16 @@ function Contact({ id }) {
               href={PROFILE.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl px-5 py-4 text-sm text-white hover:border-[#B026B0] hover:text-[#B026B0] transition-colors duration-300"
+              className="flex items-center gap-3 bg-ink/5 backdrop-blur-md border border-ink/10 rounded-xl px-5 py-4 text-sm text-ink hover:border-accent hover:text-accent transition-colors duration-300"
             >
               <Github className="w-4 h-4" />
               {t.contact.github}
-              <ExternalLink className="w-3 h-3 ml-auto text-white/30" />
+              <ExternalLink className="w-3 h-3 ml-auto text-faint" />
             </a>
           </Reveal>
         </div>
 
-        <footer className="mt-24 pt-8 border-t border-white/10 text-white/30 text-xs">
+        <footer className="mt-24 pt-8 border-t border-ink/10 text-faint text-xs">
           © {new Date().getFullYear()} {PROFILE.name}. {t.contact.rights}
         </footer>
       </div>
@@ -1827,28 +1935,32 @@ export default function App() {
 
   return (
     <LangProvider>
-      <ScrollDirectionContext.Provider value={directionRef}>
-        <ReducedMotionContext.Provider value={reducedMotion}>
-          <div
-            className="relative min-h-screen overflow-x-hidden bg-[#0D0D0D] bg-dot-grid min-[995px]:pr-24"
-            style={{ backgroundColor: "#0D0D0D" }}
-          >
-            <Header />
-            <SectionSidebar activeIndex={activeIndex} />
-            <ScrollDownHint activeIndex={activeIndex} />
-            <GithubFloatingButton hidden={activeIndex === SECTIONS.length - 1} />
+      <ThemeProvider>
+        <ProjectStatsProvider>
+          <ScrollDirectionContext.Provider value={directionRef}>
+            <ReducedMotionContext.Provider value={reducedMotion}>
+              <div
+                className="relative min-h-screen overflow-x-hidden bg-bg bg-dot-grid min-[995px]:pr-24"
+                style={{ backgroundColor: "rgb(var(--c-bg))" }}
+              >
+                <Header />
+                <SectionSidebar activeIndex={activeIndex} />
+                <ScrollDownHint activeIndex={activeIndex} />
+                <GithubFloatingButton hidden={activeIndex === SECTIONS.length - 1} />
 
-            <main>
-              <Hero id="hero" />
-              <About id="sobre" />
-              <Experience id="experiencia" />
-              <Skills id="skills" />
-              <Projects id="projetos" />
-              <Contact id="contato" />
-            </main>
-          </div>
-        </ReducedMotionContext.Provider>
-      </ScrollDirectionContext.Provider>
+                <main>
+                  <Hero id="hero" />
+                  <About id="sobre" />
+                  <Experience id="experiencia" />
+                  <Skills id="skills" />
+                  <Projects id="projetos" />
+                  <Contact id="contato" />
+                </main>
+              </div>
+            </ReducedMotionContext.Provider>
+          </ScrollDirectionContext.Provider>
+        </ProjectStatsProvider>
+      </ThemeProvider>
     </LangProvider>
   );
 }

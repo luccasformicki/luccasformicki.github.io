@@ -3,17 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <!-- Fora dos buscadores. A página precisa continuar RASTREÁVEL para o
          Google conseguir ler este noindex, por isso ela não é bloqueada no
          robots.txt — lá ficam só os arquivos (.pdf/.docx), que não têm meta tag. -->
     <meta name="robots" content="noindex, nofollow, noarchive" />
     <title>Currículo — Luccas Formicki</title>
-    <script type="module" crossorigin src="/assets/curriculo-DEvVLj-9.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/index-BTRuyzk0.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-C-JMKNEB.css">
+    <script>
+      // Tema aplicado ANTES da primeira pintura: sem isto a página nasceria
+      // escura e piscaria para o claro depois que o React montasse. Precisa ser
+      // inline e síncrono. Mantenha em sincronia com src/theme.jsx — mesma
+      // chave, mesmos valores, escuro como padrão.
+      (function () {
+        var theme = "dark";
+        try {
+          var saved = localStorage.getItem("portfolio:theme");
+          if (saved === "light" || saved === "dark") theme = saved;
+        } catch (e) {
+          /* localStorage indisponível */
+        }
+        document.documentElement.dataset.theme = theme;
+        // Cobre também o intervalo antes da folha de estilo chegar.
+        document.documentElement.style.backgroundColor =
+          theme === "light" ? "#ffffff" : "#0d0d0d";
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/curriculo-BuqXG6X0.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/index-CIx9Cnhd.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-zyrAJF6f.css">
   </head>
-  <body class="bg-[#0D0D0D]">
+  <body>
     <div id="root"></div>
   </body>
 </html>

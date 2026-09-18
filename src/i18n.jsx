@@ -11,6 +11,10 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 export const TRANSLATIONS = {
   pt: {
     header: { contact: "Contato" },
+    theme: {
+      switchToLight: "Ativar o modo claro",
+      switchToDark: "Ativar o modo escuro",
+    },
     scrollDown: "ROLAR PARA BAIXO",
     backToTop: "VOLTAR AO TOPO",
     githubAria: "Abrir perfil do GitHub em nova aba",
@@ -78,6 +82,10 @@ export const TRANSLATIONS = {
   },
   en: {
     header: { contact: "Contact" },
+    theme: {
+      switchToLight: "Switch to light mode",
+      switchToDark: "Switch to dark mode",
+    },
     scrollDown: "SCROLL DOWN",
     backToTop: "BACK TO TOP",
     githubAria: "Open GitHub profile in a new tab",
@@ -188,12 +196,12 @@ export function LangProvider({ children }) {
 export function LanguageToggle() {
   const { lang, setLang } = useLang();
   return (
-    <div className="flex items-center text-xs font-medium border border-white/20 rounded-full overflow-hidden">
+    <div className="flex items-center text-xs font-medium border border-ink/20 rounded-full overflow-hidden">
       <button
         onClick={() => setLang("pt")}
         aria-pressed={lang === "pt"}
         className={`px-3 py-1.5 transition-colors duration-300 ${
-          lang === "pt" ? "bg-[#B026B0] text-white" : "text-white/50 hover:text-white"
+          lang === "pt" ? "bg-accent text-on-accent" : "text-muted hover:text-ink"
         }`}
       >
         PT
@@ -202,7 +210,7 @@ export function LanguageToggle() {
         onClick={() => setLang("en")}
         aria-pressed={lang === "en"}
         className={`px-3 py-1.5 transition-colors duration-300 ${
-          lang === "en" ? "bg-[#B026B0] text-white" : "text-white/50 hover:text-white"
+          lang === "en" ? "bg-accent text-on-accent" : "text-muted hover:text-ink"
         }`}
       >
         EN

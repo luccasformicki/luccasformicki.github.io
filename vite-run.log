@@ -1,0 +1,247 @@
+
+> portfolio@1.0.0 dev
+> vite
+
+
+  [32m[1mVITE[22m v6.4.3[39m  [2mready in [0m[1m460[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+[2m01:28:33[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m01:28:33[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because lockfile has changed
+[2m01:28:34[22m [36m[1m[vite][22m[39m server restarted.
+[2m01:29:07[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m01:29:07[22m [36m[1m[vite][22m[39m server restarted.
+[2m01:29:10[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m01:29:10[22m [36m[1m[vite][22m[39m server restarted.
+[2m01:39:37[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m01:39:37[22m [36m[1m[vite][22m[39m server restarted.
+[2m01:50:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/supabase.js[22m
+[2m01:50:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/supabase.js[22m
+[2m01:52:07[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m01:52:07[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\src\App.jsx: 'import' and 'export' may only appear at the top level. (1915:2)
+
+[0m [90m 1913 |[31m     [33m<[31m[33m/[31m[33mLangProvider[31m[33m>[31m
+ [90m 1914 |[31m   )[33m;[31m
+[31m[1m>[22m[31m[90m 1915 |[31m   [36mimport[31m { supabase } [36mfrom[31m [32m'./lib/supabase'[31m
+ [90m      |[31m   [31m[1m^[22m[31m
+ [90m 1916 |[31m
+ [90m 1917 |[31m supabase[33m.[31m[36mfrom[31m([32m'project_stats'[31m)[33m.[31mselect([32m'*'[31m)[33m.[31mthen(console[33m.[31mlog)
+ [90m 1918 |[31m }[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Luccas Formicki/OneDrive/Documentos/Portifolio/src/App.jsx[39m:1915:2
+      at constructor (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:369:19)
+      at JSXParserMixin.raise (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:6620:19)
+      at JSXParserMixin.parseStatementContent (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12900:18)
+      at JSXParserMixin.parseStatementLike (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12796:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12776:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13345:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13338:10)
+      at JSXParserMixin.parseBlock (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13326:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12129:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12115:10)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13474:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12432:14)
+      at JSXParserMixin.parseFunction (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13473:10)
+      at JSXParserMixin.parseExportDefaultExpression (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13936:19)
+      at JSXParserMixin.parseExport (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13857:25)
+      at JSXParserMixin.parseStatementContent (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12907:27)
+      at JSXParserMixin.parseStatementLike (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12796:17)
+      at JSXParserMixin.parseModuleItem (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12773:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13345:36)
+      at JSXParserMixin.parseBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13338:10)
+      at JSXParserMixin.parseProgram (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12651:10)
+      at JSXParserMixin.parseTopLevel (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12641:25)
+      at JSXParserMixin.parse (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:14517:25)
+      at parse (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:14551:38)
+      at parser (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transformation\normalize-file.js:51:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:261:32)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:223:11)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:189:28
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:113:33
+      at step (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:287:14)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:223:11)
+[2m01:52:08[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m01:52:09[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\src\App.jsx: 'import' and 'export' may only appear at the top level. (1915:2)
+
+[0m [90m 1913 |[31m     [33m<[31m[33m/[31m[33mLangProvider[31m[33m>[31m
+ [90m 1914 |[31m   )[33m;[31m
+[31m[1m>[22m[31m[90m 1915 |[31m   [36mimport[31m { supabase } [36mfrom[31m [32m'./lib/supabase'[31m
+ [90m      |[31m   [31m[1m^[22m[31m
+ [90m 1916 |[31m
+ [90m 1917 |[31m supabase[33m.[31m[36mfrom[31m([32m'project_stats'[31m)[33m.[31mselect([32m'*'[31m)[33m.[31mthen(console[33m.[31mlog)
+ [90m 1918 |[31m }[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Luccas Formicki/OneDrive/Documentos/Portifolio/src/App.jsx[39m:1915:2
+      at constructor (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:369:19)
+      at JSXParserMixin.raise (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:6620:19)
+      at JSXParserMixin.parseStatementContent (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12900:18)
+      at JSXParserMixin.parseStatementLike (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12796:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12776:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13345:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13338:10)
+      at JSXParserMixin.parseBlock (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13326:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12129:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12115:10)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13474:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12432:14)
+      at JSXParserMixin.parseFunction (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13473:10)
+      at JSXParserMixin.parseExportDefaultExpression (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13936:19)
+      at JSXParserMixin.parseExport (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13857:25)
+      at JSXParserMixin.parseStatementContent (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12907:27)
+      at JSXParserMixin.parseStatementLike (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12796:17)
+      at JSXParserMixin.parseModuleItem (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12773:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13345:36)
+      at JSXParserMixin.parseBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13338:10)
+      at JSXParserMixin.parseProgram (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12651:10)
+      at JSXParserMixin.parseTopLevel (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12641:25)
+      at JSXParserMixin.parse (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:14517:25)
+      at parse (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:14551:38)
+      at parser (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transformation\normalize-file.js:51:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:261:32)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:223:11)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:189:28
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:113:33
+      at step (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:287:14)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:223:11)
+[2m01:52:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m01:52:09[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\src\App.jsx: 'import' and 'export' may only appear at the top level. (1915:2)
+
+[0m [90m 1913 |[31m     [33m<[31m[33m/[31m[33mLangProvider[31m[33m>[31m
+ [90m 1914 |[31m   )[33m;[31m
+[31m[1m>[22m[31m[90m 1915 |[31m   [36mimport[31m { supabase } [36mfrom[31m [32m'./lib/supabase'[31m
+ [90m      |[31m   [31m[1m^[22m[31m
+ [90m 1916 |[31m
+ [90m 1917 |[31m supabase[33m.[31m[36mfrom[31m([32m'project_stats'[31m)[33m.[31mselect([32m'*'[31m)[33m.[31mthen(console[33m.[31mlog)
+ [90m 1918 |[31m }[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Luccas Formicki/OneDrive/Documentos/Portifolio/src/App.jsx[39m:1915:2
+      at constructor (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:369:19)
+      at JSXParserMixin.raise (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:6620:19)
+      at JSXParserMixin.parseStatementContent (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12900:18)
+      at JSXParserMixin.parseStatementLike (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12796:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12776:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13345:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13338:10)
+      at JSXParserMixin.parseBlock (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13326:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12129:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12115:10)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13474:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12432:14)
+      at JSXParserMixin.parseFunction (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13473:10)
+      at JSXParserMixin.parseExportDefaultExpression (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13936:19)
+      at JSXParserMixin.parseExport (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13857:25)
+      at JSXParserMixin.parseStatementContent (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12907:27)
+      at JSXParserMixin.parseStatementLike (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12796:17)
+      at JSXParserMixin.parseModuleItem (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12773:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13345:36)
+      at JSXParserMixin.parseBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13338:10)
+      at JSXParserMixin.parseProgram (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12651:10)
+      at JSXParserMixin.parseTopLevel (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12641:25)
+      at JSXParserMixin.parse (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:14517:25)
+      at parse (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:14551:38)
+      at parser (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transformation\normalize-file.js:51:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:261:32)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:223:11)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:189:28
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:113:33
+      at step (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:287:14)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:223:11)
+[2m01:52:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m01:52:09[22m [31m[1m[vite][22m[39m [31mInternal server error: C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\src\App.jsx: 'import' and 'export' may only appear at the top level. (1915:2)
+
+[0m [90m 1913 |[31m     [33m<[31m[33m/[31m[33mLangProvider[31m[33m>[31m
+ [90m 1914 |[31m   )[33m;[31m
+[31m[1m>[22m[31m[90m 1915 |[31m   [36mimport[31m { supabase } [36mfrom[31m [32m'./lib/supabase'[31m
+ [90m      |[31m   [31m[1m^[22m[31m
+ [90m 1916 |[31m
+ [90m 1917 |[31m supabase[33m.[31m[36mfrom[31m([32m'project_stats'[31m)[33m.[31mselect([32m'*'[31m)[33m.[31mthen(console[33m.[31mlog)
+ [90m 1918 |[31m }[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36mC:/Users/Luccas Formicki/OneDrive/Documentos/Portifolio/src/App.jsx[39m:1915:2
+      at constructor (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:369:19)
+      at JSXParserMixin.raise (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:6620:19)
+      at JSXParserMixin.parseStatementContent (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12900:18)
+      at JSXParserMixin.parseStatementLike (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12796:17)
+      at JSXParserMixin.parseStatementListItem (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12776:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13345:61)
+      at JSXParserMixin.parseBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13338:10)
+      at JSXParserMixin.parseBlock (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13326:10)
+      at JSXParserMixin.parseFunctionBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12129:24)
+      at JSXParserMixin.parseFunctionBodyAndFinish (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12115:10)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13474:12
+      at JSXParserMixin.withSmartMixTopicForbiddingContext (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12432:14)
+      at JSXParserMixin.parseFunction (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13473:10)
+      at JSXParserMixin.parseExportDefaultExpression (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13936:19)
+      at JSXParserMixin.parseExport (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13857:25)
+      at JSXParserMixin.parseStatementContent (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12907:27)
+      at JSXParserMixin.parseStatementLike (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12796:17)
+      at JSXParserMixin.parseModuleItem (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12773:17)
+      at JSXParserMixin.parseBlockOrModuleBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13345:36)
+      at JSXParserMixin.parseBlockBody (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:13338:10)
+      at JSXParserMixin.parseProgram (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12651:10)
+      at JSXParserMixin.parseTopLevel (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:12641:25)
+      at JSXParserMixin.parse (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:14517:25)
+      at parse (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\parser\lib\index.js:14551:38)
+      at parser (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\parser\index.js:41:34)
+      at parser.next (<anonymous>)
+      at normalizeFile (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transformation\normalize-file.js:51:37)
+      at normalizeFile.next (<anonymous>)
+      at run (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transformation\index.js:22:50)
+      at run.next (<anonymous>)
+      at transform (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\transform.js:22:33)
+      at transform.next (<anonymous>)
+      at step (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:261:32)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:223:11)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:189:28
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\@babel\core\lib\gensync-utils\async.js:67:7
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:113:33
+      at step (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:287:14)
+      at C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:273:13
+      at async.call.result.err.err (C:\Users\Luccas Formicki\OneDrive\Documentos\Portifolio\node_modules\gensync\index.js:223:11)
+[2m01:52:26[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m01:54:12[22m [36m[1m[vite][22m[39m [32m.env changed, restarting server...[39m
+[2m01:54:12[22m [36m[1m[vite][22m[39m server restarted.
+[2m01:54:21[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/supabase.js[22m
+[2m02:00:16[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m02:01:25[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m02:01:58[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m02:02:00[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ new dependencies optimized: [33m@supabase/supabase-js[32m[39m
+[2m02:02:00[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ optimized dependencies changed. reloading[39m
+[2m02:02:13[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m02:04:40[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m02:06:47[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m02:07:09[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m
+[2m02:07:49[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.jsx, /src/index.css[22m

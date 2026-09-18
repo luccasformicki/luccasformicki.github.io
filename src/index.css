@@ -2,13 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================================
+ * TEMAS
+ * Uma variável por papel, não por cor. O tema escuro vive em :root (padrão do
+ * site) e o claro sobrescreve os mesmos nomes em [data-theme="light"]. Os
+ * valores são RGB soltos ("13 13 13") porque o Tailwind os embrulha em
+ * `rgb(... / <alpha-value>)` — é isso que faz `border-ink/10` funcionar nos
+ * dois temas. O atributo data-theme é escrito antes da pintura pelo script
+ * inline do index.html, então a página nunca aparece com o tema errado.
+ * ==========================================================================*/
+:root {
+  color-scheme: dark;
+
+  --c-bg: 13 13 13;
+  --c-ink: 255 255 255;
+  --c-body: 196 196 196;
+  --c-muted: 124 124 124;
+  --c-faint: 86 86 86;
+  --c-accent: 176 38 176;
+  --c-accent-hover: 193 54 193;
+  --c-accent-soft: 215 122 215;
+  --c-on-accent: 255 255 255;
+  --c-rail: 58 58 58;
+  --c-ok: 110 231 183;
+  --c-danger: 252 165 165;
+  --c-live: 34 197 94;
+  --c-live-ping: 74 222 128;
+
+  /* pontilhado de fundo e brilho do marcador da sidebar: cores compostas,
+     usadas fora do pipeline de cor do Tailwind */
+  --c-dot: rgba(255, 255, 255, 0.08);
+  --c-rail-glow: rgba(255, 255, 255, 0.5);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --c-bg: 255 255 255;
+  --c-ink: 24 24 27;
+  --c-body: 63 63 70;
+  --c-muted: 106 106 112;
+  --c-faint: 113 113 120;
+  /* o roxo da identidade é o mesmo nos dois temas: 5,6:1 sobre o branco */
+  --c-accent: 176 38 176;
+  --c-accent-hover: 143 31 143;
+  --c-accent-soft: 138 27 138;
+  --c-on-accent: 255 255 255;
+  --c-rail: 212 212 216;
+  --c-ok: 4 108 78;
+  --c-danger: 185 28 28;
+  --c-live: 22 163 74;
+  --c-live-ping: 34 197 94;
+
+  --c-dot: rgba(24, 24, 27, 0.1);
+  --c-rail-glow: rgba(24, 24, 27, 0.3);
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 html,
 body {
-  background-color: #0d0d0d;
+  background-color: rgb(var(--c-bg));
   overflow-x: hidden;
 }
 
@@ -18,15 +74,38 @@ body {
   }
 }
 
+/* Transição do tema. Vale só durante a troca: o botão põe a classe e a tira
+   ~300ms depois. Fora disso as regras não existem, então nada compete com as
+   transições próprias dos componentes (hover, reveal, carrossel). */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    color 300ms ease,
+    fill 300ms ease,
+    stroke 300ms ease,
+    box-shadow 300ms ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.theme-switching *,
+  html.theme-switching *::before,
+  html.theme-switching *::after {
+    transition: none !important;
+  }
+}
+
 /* scrollbar discreta, alinhada à identidade visual */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0d0d0d;
+  background: rgb(var(--c-bg));
 }
 ::-webkit-scrollbar-thumb {
-  background: #b026b0;
+  background: rgb(var(--c-accent));
   border-radius: 8px;
 }
 
@@ -80,7 +159,6 @@ body {
   }
 }
 
-
 /* ============================================================================
  * Painel de código animado do hero
  * Paleta (tema Dracula) portada de hero-animation-preview.html e exposta como
@@ -105,6 +183,39 @@ body {
   --code-param: #ffb86c;
   --code-error: #ff5555;
   --code-hint: #5ce87b;
+  --code-filename: #6d6480;
+  --code-pill-bg: #201a2e;
+  --code-pill-border: #3a2f52;
+  --code-pill-text: #b9b1cc;
+  --code-shadow: rgba(0, 0, 0, 0.55);
+}
+
+/* Versão clara do mesmo tema: a base vira um branco levemente arroxeado e
+   cada token é escurecido até passar de 4,5:1 sobre ela, preservando a
+   função de cada cor (string verde, número roxo, comentário azulado). */
+:root[data-theme="light"] .code-anim {
+  --code-bg: #faf7fd;
+  --code-bar: #f1ecf7;
+  --code-border: #e2d9ee;
+  --code-linenr: #9a90ad;
+  --code-plain: #2b2333;
+  --code-comment: #63698a;
+  --code-keyword: #b5148a;
+  --code-op: #b5148a;
+  --code-builtin: #0a6a93;
+  --code-func: #0a6a8a;
+  --code-class: #0a6a8a;
+  --code-string: #127036;
+  --code-number: #7333cc;
+  --code-vardecl: #9c1fbc;
+  --code-param: #93540a;
+  --code-error: #c22121;
+  --code-hint: #127036;
+  --code-filename: #7a7090;
+  --code-pill-bg: #f1ecf7;
+  --code-pill-border: #ded2ee;
+  --code-pill-text: #5b5370;
+  --code-shadow: rgba(24, 24, 27, 0.14);
 }
 
 .tok-plain {
@@ -160,7 +271,7 @@ body {
   display: inline-block;
   width: 0.6em;
   height: 1.2em;
-  background: #b026b0;
+  background: rgb(var(--c-accent));
   vertical-align: -0.24em;
   animation: code-blink 1s steps(2, start) infinite;
 }
@@ -179,7 +290,7 @@ body {
   scrollbar-color: rgba(176, 38, 176, 0.45) transparent;
 }
 .code-scroll:focus-visible {
-  outline: 2px solid #b026b0;
+  outline: 2px solid rgb(var(--c-accent));
   outline-offset: -2px;
 }
 .code-scroll::-webkit-scrollbar {

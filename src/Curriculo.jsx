@@ -96,11 +96,11 @@ export default function Curriculo() {
 
   return (
     <div
-      className="min-h-screen overflow-x-hidden bg-[#0D0D0D] bg-dot-grid"
-      style={{ backgroundColor: "#0D0D0D" }}
+      className="min-h-screen overflow-x-hidden bg-bg bg-dot-grid"
+      style={{ backgroundColor: "rgb(var(--c-bg))" }}
     >
       <main className="mx-auto w-full max-w-5xl px-5 pb-16 pt-10 sm:px-8 md:pb-24 md:pt-14">
-        <h1 className="text-2xl font-bold leading-tight text-white sm:text-3xl lg:text-4xl">
+        <h1 className="text-2xl font-bold leading-tight text-ink sm:text-3xl lg:text-4xl">
           {TEXT.title}
         </h1>
 
@@ -112,7 +112,7 @@ export default function Curriculo() {
               href={RESUME_PDF}
               download
               target="_self"
-              className="inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-[#B026B0] px-6 py-3.5 text-sm font-medium text-white transition-colors duration-300 hover:bg-[#8f1f8f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B026B0] motion-reduce:transition-none sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-accent px-6 py-3.5 text-sm font-medium text-on-accent transition-colors duration-300 hover:bg-[#8f1f8f] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none sm:w-auto"
             >
               <Download className="h-4 w-4 shrink-0" />
               {TEXT.download}
@@ -121,7 +121,7 @@ export default function Curriculo() {
 
           <a
             href="/"
-            className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-white/30 px-6 py-3.5 text-sm text-white transition-colors duration-300 hover:border-[#B026B0] hover:text-[#B026B0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B026B0] motion-reduce:transition-none sm:w-auto"
+            className="group inline-flex w-full items-center justify-center gap-2.5 rounded-full border border-ink/30 px-6 py-3.5 text-sm text-ink transition-colors duration-300 hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none sm:w-auto"
           >
             <ArrowLeft className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:-translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0" />
             {TEXT.back}
@@ -131,7 +131,7 @@ export default function Curriculo() {
         {status === "loading" ? (
           <p
             aria-live="polite"
-            className="mt-8 text-sm font-light text-[#C4C4C4] md:mt-10"
+            className="mt-8 text-sm font-light text-body md:mt-10"
           >
             {TEXT.loading}
           </p>
@@ -140,14 +140,14 @@ export default function Curriculo() {
         {status === "error" ? (
           <p
             aria-live="polite"
-            className="mt-8 text-sm font-light leading-relaxed text-[#C4C4C4] md:mt-10"
+            className="mt-8 text-sm font-light leading-relaxed text-body md:mt-10"
           >
             {TEXT.errorTitle}{" "}
             <a
               href={RESUME_PDF}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#B026B0] underline underline-offset-4"
+              className="text-accent underline underline-offset-4"
             >
               {TEXT.errorLink}
             </a>
@@ -160,16 +160,16 @@ export default function Curriculo() {
             data={RESUME_PDF}
             type="application/pdf"
             aria-label={TEXT.viewerLabel}
-            className="resume-viewer mt-8 block h-[80vh] min-h-[420px] w-full rounded-xl border border-white/10 bg-white/5 md:mt-10 md:rounded-2xl"
+            className="resume-viewer mt-8 block h-[80vh] min-h-[420px] w-full rounded-xl border border-ink/10 bg-ink/5 md:mt-10 md:rounded-2xl"
           >
             {/* Alguns navegadores de celular não embutem PDF: aqui fica a saída. */}
-            <p className="p-6 text-sm font-light leading-relaxed text-[#C4C4C4]">
+            <p className="p-6 text-sm font-light leading-relaxed text-body">
               {TEXT.viewerFallback}{" "}
               <a
                 href={RESUME_PDF}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#B026B0] underline underline-offset-4"
+                className="text-accent underline underline-offset-4"
               >
                 {TEXT.viewerFallbackLink}
               </a>
