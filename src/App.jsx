@@ -1376,7 +1376,7 @@ function ProjectFilter({ techs, active, onChange }) {
 
 function ProjectCard({ project, index, mobile = false }) {
   const { lang, t } = useLang();
-  const { getStats, hasLiked, like, registerView } = useProjectStats();
+  const { getStats, hasLiked, toggleLike, registerView } = useProjectStats();
   const { views, likes } = getStats(project.id);
   const liked = hasLiked(project.id);
   const link = projectLinkProps(project.projectUrl);
@@ -1447,13 +1447,13 @@ function ProjectCard({ project, index, mobile = false }) {
             className="w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-105"
           />
 
-          {/* Botão de curtir */}
+          {/* Botão de curtir: alterna: o mesmo clique curte e descurte */}
           <button
             onClick={(event) => {
               event.stopPropagation();
-              like(project.id);
+              toggleLike(project.id);
             }}
-            aria-label="Curtir projeto"
+            aria-label={liked ? t.projects.unlikeAction : t.projects.likeAction}
             aria-pressed={liked}
             className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center transition-transform duration-200 hover:scale-110"
           >
@@ -1576,16 +1576,12 @@ function MobileProjectCarousel({ projects }) {
                   active ? "opacity-100" : "invisible opacity-0 pointer-events-none"
                 }`}
               >
-                <div className="mb-3 flex min-h-7 flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[10px] text-body border border-ink/10 rounded-full px-2.5 py-1"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                {/* Sem as tags de tecnologia aqui: no celular o filtro por
+                    tecnologia não aparece, então elas não eram clicáveis nem
+                    informavam nada que a descrição do card já não diga. A
+                    altura reservada (`min-h-7`) saiu junto para o card não
+                    ficar com uma faixa vazia acima. No desktop as tags seguem
+                    dentro do próprio card, em `ProjectCard`. */}
                 <ProjectCard project={project} index={0} mobile />
               </div>
             );

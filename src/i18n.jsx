@@ -57,6 +57,8 @@ export const TRANSLATIONS = {
       viewCode: "Ver código",
       likesLabel: "curtidas",
       viewsLabel: "visualizações",
+      likeAction: "Curtir projeto",
+      unlikeAction: "Remover curtida",
       status: {
         concluido: "Concluído",
         "em-andamento": "Em andamento",
@@ -128,6 +130,8 @@ export const TRANSLATIONS = {
       viewCode: "View code",
       likesLabel: "likes",
       viewsLabel: "views",
+      likeAction: "Like project",
+      unlikeAction: "Remove like",
       status: {
         concluido: "Completed",
         "em-andamento": "In progress",
