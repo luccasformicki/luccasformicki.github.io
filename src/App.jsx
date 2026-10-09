@@ -163,6 +163,15 @@ const PRIMARY_TECHNOLOGIES = [
 // qualquer URL com esquema (https://github.com/...) é externa e abre em nova
 // aba. Com `null`, o botão do desktop aparece desabilitado e o card do celular
 // não fica clicável — nunca existe link quebrado.
+//
+// `repoUrl` é opcional e rende o botão secundário "Ver repositório". Sem ele o
+// botão não aparece: ao contrário do principal, não há nada a explicar a quem
+// visita — um segundo botão desabilitado só roubaria espaço do card.
+//
+// `capa` é o caminho da imagem em `public/` (WebP de 800 × 450, a mesma
+// proporção `aspect-video` em que o card desenha a imagem) e `capaAlt` é o
+// texto alternativo. Sem `capa`, o card cai no placeholder gerado a partir do
+// título, que é como os projetos ainda sem print continuam aparecendo.
 const PROJETOS = [
   {
     destaque: true,
@@ -170,9 +179,13 @@ const PROJETOS = [
     titulo: "Sensitivity Finder",
     status: "concluido",
     descricao:
-      "Ferramenta para jogadores de CS e Valorant descobrirem a sensibilidade ideal de mira. Em vez de tentativa e erro, o jogador faz rodadas curtas de teste e o sistema analisa o desempenho para sugerir o valor que funciona melhor para ele.",
-    tags: ["JavaScript", "HTML", "CSS"],
-    projectUrl: null,
+      "Teste de mira no navegador para quem joga CS2 e Valorant: a partir do DPI, da sensibilidade e da resolução, reproduz a câmera em perspectiva e a mesma matemática de mira dos dois jogos. Em vez de tentativa e erro, o jogador faz rodadas curtas e o sistema analisa o desempenho para sugerir a sensibilidade que funciona melhor para ele.",
+    tags: ["React", "Vite", "Tailwind CSS", "JavaScript"],
+    capa: "/projetos/sensitivity-finder.webp",
+    capaAlt:
+      "Página inicial do Sensitivity Finder, com os campos de DPI, sensibilidade do jogo e resolução",
+    projectUrl: "https://luccasformicki.github.io/sensitivity-finder/",
+    repoUrl: "https://github.com/luccasformicki/sensitivity-finder",
   },
   {
     id: "extensao-acessibilidade",
@@ -184,13 +197,18 @@ const PROJETOS = [
     projectUrl: null,
   },
   {
+    // `id` continua "ecommerce-moda", o nome que este projeto tinha quando
+    // subiu: trocá-lo zeraria as visualizações e curtidas já contadas.
     id: "ecommerce-moda",
-    titulo: "E-commerce de moda",
-    status: "em-andamento",
+    titulo: "Grand Eva Modas & Bazar",
+    status: "concluido",
     descricao:
-      "Loja online para uma cliente do meu bairro: catálogo de produtos, carrinho e painel administrativo para ela gerenciar estoque e pedidos sozinha. Em fase final, aguardando hospedagem.",
-    tags: [],
-    projectUrl: null,
+      "Site para uma loja de moda e bazar de bairro, com vitrine de produtos, carrossel de banners, contato direto por WhatsApp e layout responsivo para mobile.",
+    tags: ["HTML", "CSS", "JavaScript"],
+    capa: "/projetos/grand-eva-modas.webp",
+    capaAlt: "Página inicial do site Grand Eva Modas & Bazar",
+    projectUrl: "https://luccasformicki.github.io/grand-eva-modas/",
+    repoUrl: "https://github.com/luccasformicki/grand-eva-modas",
   },
   {
     id: "site-recupcred",
@@ -291,6 +309,11 @@ function projectLinkProps(projectUrl) {
     : { href: projectUrl };
 }
 
+// Forma comum aos dois botões do card, para o secundário nunca sair de medida
+// em relação ao principal.
+const PROJECT_BUTTON_SHAPE =
+  "text-center text-sm font-medium rounded-full px-5 py-2.5 transition-colors duration-300";
+
 /* ---- Botão único do card ---------------------------------------------------
  * Sem `projectUrl`, aparece desabilitado em vez de sumir: os cards da grade
  * mantêm a mesma altura e quem visita entende que ainda não há para onde ir,
@@ -299,7 +322,7 @@ function ProjectLinkButton({ project, className = "" }) {
   const { t } = useLang();
   const { registerView } = useProjectStats();
   const link = projectLinkProps(project.projectUrl);
-  const shape = `text-center text-sm font-medium rounded-full px-5 py-2.5 transition-colors duration-300 ${className}`;
+  const shape = `${PROJECT_BUTTON_SHAPE} ${className}`;
 
   if (!link) {
     return (
@@ -322,6 +345,29 @@ function ProjectLinkButton({ project, className = "" }) {
       className={`${shape} bg-accent text-on-accent hover:bg-accent-hover`}
     >
       {t.projects.viewProject}
+    </a>
+  );
+}
+
+/* ---- Botão secundário do card ---------------------------------------------
+ * O repositório é sempre externo, então vai para uma aba nova. Sem `repoUrl`
+ * o botão some em vez de aparecer desabilitado: o botão principal já segura a
+ * altura do card, e "sem código público" não é informação que o visitante
+ * precise de um botão para receber. Mesma forma do principal, com a borda
+ * discreta que o resto do site usa nas ações secundárias. ------------------*/
+function ProjectRepoButton({ project, className = "" }) {
+  const { t } = useLang();
+  if (!project.repoUrl) return null;
+
+  return (
+    <a
+      href={project.repoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(event) => event.stopPropagation()}
+      className={`${PROJECT_BUTTON_SHAPE} border border-ink/30 text-ink hover:border-accent hover:text-accent ${className}`}
+    >
+      {t.projects.viewRepo}
     </a>
   );
 }
@@ -599,7 +645,7 @@ const CODE = [
   ],
   [
     { t: "    ", c: "plain" },
-    { t: '"E-commerce de moda"', c: "string" },
+    { t: '"Grand Eva Modas & Bazar"', c: "string" },
     { t: ",", c: "plain" },
   ],
   [{ t: "]", c: "plain" }],
@@ -1290,8 +1336,14 @@ function FeaturedProject() {
     <Reveal index={2} className="mb-16">
       <GlassCard className="grid md:grid-cols-2 gap-0 overflow-hidden">
         <img
-          src={`https://placehold.co/900x600/141414/B026B0?text=${encodeURIComponent(FEATURED_PROJECT.titulo)}`}
-          alt={FEATURED_PROJECT.titulo}
+          src={
+            FEATURED_PROJECT.capa ??
+            `https://placehold.co/900x600/141414/B026B0?text=${encodeURIComponent(
+              FEATURED_PROJECT.titulo
+            )}`
+          }
+          alt={FEATURED_PROJECT.capaAlt ?? FEATURED_PROJECT.titulo}
+          loading="lazy"
           className="w-full h-full object-cover aspect-video md:aspect-auto"
         />
         <div className="p-8 md:p-10 flex flex-col justify-center">
@@ -1319,6 +1371,7 @@ function FeaturedProject() {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <ProjectLinkButton project={FEATURED_PROJECT} />
+            <ProjectRepoButton project={FEATURED_PROJECT} />
           </div>
         </div>
       </GlassCard>
@@ -1442,8 +1495,14 @@ function ProjectCard({ project, index, mobile = false }) {
       >
         <div className="relative overflow-hidden">
           <img
-            src={`https://placehold.co/600x400/141414/B026B0?text=${encodeURIComponent(project.titulo)}`}
-            alt={project.titulo}
+            src={
+              project.capa ??
+              `https://placehold.co/600x400/141414/B026B0?text=${encodeURIComponent(
+                project.titulo
+              )}`
+            }
+            alt={project.capaAlt ?? project.titulo}
+            loading="lazy"
             className="w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-105"
           />
 
@@ -1501,8 +1560,11 @@ function ProjectCard({ project, index, mobile = false }) {
             {likes} {t.projects.likesLabel}
           </div>
 
-          <div className="mt-6 hidden items-center gap-3 md:flex">
+          {/* Empilhados: em md:grid-cols-2 o card é estreito demais para os
+              dois lado a lado sem o rótulo do secundário quebrar linha. */}
+          <div className="mt-6 hidden flex-col gap-3 md:flex">
             <ProjectLinkButton project={project} className="w-full" />
+            <ProjectRepoButton project={project} className="w-full" />
           </div>
         </div>
       </GlassCard>
